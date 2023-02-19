@@ -24,6 +24,7 @@ export function day02() {
   */
 
   runStrat();
+  runStrat2();
 }
 
 const gameScore = (oCh: string, pCh: string) => {
@@ -101,6 +102,92 @@ const runStrat = () => {
   for (const game of games) {
     console.log({ i1: game[0], i2: game[2] });
     score += playGame(game[0], game[2]);
+  }
+  console.log({ score });
+  // console.log(playGame('B', 'X'));
+};
+/*
+X-Lose
+Y- Draw
+Z-Win
+
+LOSE
+o       y
+---------
+A       Z
+B       X
+C       Y
+
+TIE
+o       y
+---------
+A       X
+B       Y
+C       Z
+
+WIN
+o       y
+---------
+A       Y
+B       Z
+C       X
+
+A (X)-Rock
+B (Y)- Paper
+C (Z)-Scissors
+
+
+*/
+const getPlayerChoice = (oCh: string, desiredOutCome: string) => {
+  // lose
+  if (desiredOutCome === 'X') {
+    if (oCh === 'A') {
+      return 'Z';
+    } else if (oCh === 'B') {
+      return 'X';
+    } else if (oCh === 'C') {
+      return 'Y';
+    }
+  }
+  // tie
+  if (desiredOutCome === 'Y') {
+    if (oCh === 'A') {
+      return 'X';
+    } else if (oCh === 'B') {
+      return 'Y';
+    } else if (oCh === 'C') {
+      return 'Z';
+    }
+  }
+  // tie
+  if (desiredOutCome === 'Z') {
+    if (oCh === 'A') {
+      return 'Y';
+    } else if (oCh === 'B') {
+      return 'Z';
+    } else if (oCh === 'C') {
+      return 'X';
+    }
+  }
+};
+
+const playGame2 = (oCh: string, dOc: string) => {
+  const pCh = getPlayerChoice(oCh, dOc);
+  if (!pCh) throw new Error('Invalid Entry');
+  const scoreFromGame = gameScore(oCh, pCh);
+  const scoreFromChoice = choiceScore(pCh);
+  return scoreFromGame + scoreFromChoice;
+};
+
+const runStrat2 = () => {
+  const filePath = path.join(__dirname, './day.txt');
+  const readLines = readFileSync(filePath, 'utf-8');
+  const games = readLines.split('\n');
+  // console.log(games);
+  let score = 0;
+  for (const game of games) {
+    console.log({ i1: game[0], i2: game[2] });
+    score += playGame2(game[0], game[2]);
   }
   console.log({ score });
   // console.log(playGame('B', 'X'));
